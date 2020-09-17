@@ -4,18 +4,17 @@
 #include <stdlib.h>
 #include <string.h>
 
-uint64_t hexchar2val(char *in) {
-  int str_point = 0;
-  uint64_t value = 0;
-  if (*in == '0' && *(in + 1) == 'x')
-    str_point = 2;
-  for (int i = str_point, j = strlen(in) - str_point - 1; i < strlen(in);
-       i++, j--) {
-    uint8_t letter = *(in + i) & 0x40;
-    uint8_t shift = (letter >> 3) | (letter >> 6);
-    value += pow(16, j) * (int)((*(in + i) + shift) & 0xf);
-  }
-  return value;
+uint64_t hexchar2val(char* in) {
+    int str_point = 0, i = 0;
+    uint64_t payload = 0, value = 0;
+    if (*in == '0' && *(in + 1) == 'x')
+        str_point = 2;
+    memcpy(&payload, in + str_point, strlen(in) - str_point);
+    uint64_t letter = payload & 0x4040404040404040;
+    uint64_t shift = (letter >> 3) | (letter >> 6);
+    for (letter = (payload + shift) & 0x0F0F0F0F0F0F0F0F; letter > 0; i++, letter = letter >> 8)
+        value += pow(16, i) * (letter & 0xF);
+    return value;
 }
 
 void main()
