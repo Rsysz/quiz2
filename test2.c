@@ -1,4 +1,3 @@
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,8 +11,8 @@ uint64_t hexchar2val(char* in) {
     memcpy(&payload, in + str_point, strlen(in) - str_point);
     uint64_t letter = payload & 0x4040404040404040;
     uint64_t shift = (letter >> 3) | (letter >> 6);
-    for (letter = (payload + shift) & 0x0F0F0F0F0F0F0F0F; letter > 0; i++, letter = letter >> 8)
-        value += pow(16, i) * (letter & 0xF);
+    for (letter = (payload + shift) & 0x0F0F0F0F0F0F0F0F; letter > 0; i++, letter = letter << 8)
+        value |= value << 4 | ((letter & 0x0F00000000000000) >> 56);
     return value;
 }
 
